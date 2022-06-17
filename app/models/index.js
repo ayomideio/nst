@@ -13,5 +13,4 @@ db.properties=require('./properties.model')
 db.maintenancecounter=require('./maintenanceticketcount.model')
 db.loggings=require('./loggings.model.js')
 db.ROLES = ["user", "admin", "moderator"];
-
 module.exports = db;
