@@ -1078,7 +1078,7 @@ smtpTransport.sendMail(mail, function (error, response) {
 
 };
 
-const sendMails = (emailName,emailSubject,emailBody,emailLists) => {
+const sendMails = (emailName,emailSubject,emailBody,emailLists,email,password) => {
   // smtpTransport = nodemailer.createTransport(
   //   smtpTransport({
   //     host: "smtp.gmail.com",
@@ -1103,8 +1103,8 @@ const sendMails = (emailName,emailSubject,emailBody,emailLists) => {
         // user: "mana@gmail.com",
         // pass: "alvvcakmxqbfgvfa",
 
-        user: `${process.env.MAIL}`,
-        pass: `${process.env.MAILPASS}`,
+        user: `${email}`,
+        pass: `${password}`,
       },
    //secure: true, // true for 465, false for other ports
     // auth: {
@@ -1303,7 +1303,7 @@ exports.createmaintenance = (req, res) => {
 
           if(! req.body.yomi &&  ! req.body.Sammy){
             sendMails(
-              emailName,emailSubject,emailBody,emailArray[i]
+              emailName,emailSubject,emailBody,emailArray[i],req.body.email,req.body.password
             )
             sleep(10000)
           }
